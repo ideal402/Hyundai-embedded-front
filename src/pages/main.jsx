@@ -2,9 +2,6 @@ import React from "react";
 import {
   MonitorContainer,
   DeviceSection,
-  DeviceImage,
-  DeviceTitle,
-  DeviceSpecs,
   SystemStatusSection,
 } from "./main.style";
 import StatusCard from "../component/StatusCard";

@@ -49,8 +49,9 @@ const SensorChart = ({ data, dataKey, label }) => {
             height={60}
             interval={10}
             tickMargin={10}
+            tick={{ fontSize: 12 }}
         />
-        <YAxis stroke="#888" />
+        <YAxis stroke="#888" tick={{ fontSize: 12 }}/>
         <Tooltip labelFormatter={formatTime} />
         <Line
             type="monotone"

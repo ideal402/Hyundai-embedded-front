@@ -74,11 +74,12 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+
   html, body {
     width: 100%;
     min-width: 320px;
     font-family: 'Pretendard', sans-serif;
-    background-color: #f2f2f2;
+    background-color: black;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
@@ -90,6 +91,9 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   #root {
+    width: 100%;
+    min-height: 100vh;
+    background-color: 111;
     position: relative;
   }
 

@@ -37,14 +37,14 @@ const StatusCard = ({ name, onDataLoaded }) => {
       <S.StatusBar
         percentage={latest && latest[name] !== undefined ? latest[name] % 100 : 0}
       />
-
-      {/* ✅ 그래프 컴포넌트에 데이터 전달 */}
-      {allData.length > 0 && (
-        <SensorChart
-          data={allData}
-          dataKey={name}
-        />
-      )}
+      <S.ChartContainer>
+        {allData.length > 0 && (
+          <SensorChart
+            data={allData}
+            dataKey={name}
+          />
+        )}
+      </S.ChartContainer>
     </S.StatusCardContainer>
   );
 };
