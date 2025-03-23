@@ -29,8 +29,8 @@ const CarStatus = ({status}) => {
 
               <S.StatusItem>
                 <S.StatusLabel> 상태</S.StatusLabel>
-                <S.StatusValue isOn={status.isDriving}>
-                  {status.isDriving ? "주행 중" : "정지"}
+                <S.StatusValue isOn={!status.isAnomaly}>
+                  {!status.isAnomaly ? "정상" : "이상"}
                 </S.StatusValue>
               </S.StatusItem>
 
@@ -49,10 +49,10 @@ const CarStatus = ({status}) => {
     <S.ButtonContainer>
       {status ? (
         <>
-          <Button command="move" label={status.isCarDoorOpen ? "문열기" : "문닫기"} />
-          <Button command="return" label={status.isSunroofOpen ? "선루프 닫기":"선루프 열기" }/>
-          <Button command="move" label={status.isACActive ? "에어컨 켜기":"에어컨 끄기"} />
-          <Button command="move" label={status.isDriving ? "출발":"정지"} />
+          <Button command="toggle_door" label={status.isCarDoorOpen ? "문닫기" : "문열기"} />
+          <Button command="toggle_sunroof" label={status.isSunroofOpen ? "선루프 닫기":"선루프 열기" }/>
+          <Button command="toggle_ac" label={status.isACActive ? "에어컨 끄기":"에어컨 켜기"} />
+          <Button command="toggle_drive" label={status.isDriving ? "출발":"정지"} />
         </>
       ) : null}
     </S.ButtonContainer>
