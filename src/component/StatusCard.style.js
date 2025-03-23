@@ -8,20 +8,17 @@ export const StatusCardContainer = styled.div`
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid white;
 `;
 
 export const StatusTitle = styled.h3`
   font-size: 1.2rem;
   height: 7%;
   margin-bottom: 10px;
-  border: 1px solid white;
 `;
 
 export const StatusValue = styled.p`
   font-size: 1rem;
   font-weight: bold;
-  border: 1px solid white;
   height: 7%;
 `;
 
@@ -42,10 +39,8 @@ export const StatusBar = styled.div`
     background: red;
     transition: width 0.3s ease-in-out;
   }
-    border: 1px solid white;
 `;
 export const ChartContainer = styled.div`
   flex-grow: 1;
   width: 100%;
-  border: 1px solid white;
 `

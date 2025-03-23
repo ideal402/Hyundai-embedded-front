@@ -12,7 +12,6 @@ export const MonitorContainer = styled.div`
   overflow-y: auto;
   margin: 0 auto;
   padding: 0 20px;
-  border: 1px solid white;
   @media (min-width: 1200px) {
     max-width: 1320px;
   }
@@ -33,7 +32,9 @@ export const MonitorContainer = styled.div`
 
 export const DeviceSection = styled.div`
   width: 30%;
-  height: 100%;
+  height: calc(100% - 20px);
+  margin-top: 10px;
+  margin-bottom: 10px;
   padding: 20px;
   background-color: #222;
   border-radius: 12px;
@@ -41,18 +42,17 @@ export const DeviceSection = styled.div`
   flex-direction: column;
   align-items: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: 1px solid white;
+  overflow-y: auto;
 `;
 
 
 export const SystemStatusSection = styled.div`
-  border: 1px solid white;
   width: 70%;
   min-height: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  padding: 0px 20px 0px 20px;
+  padding: 10px 20px 10px 20px;
   overflow-y: auto;
 
     /* ✅ 태블릿 이하부터 1열로 */

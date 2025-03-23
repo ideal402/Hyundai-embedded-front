@@ -93,7 +93,7 @@ export const GlobalStyle = createGlobalStyle`
   #root {
     width: 100%;
     min-height: 100vh;
-    background-color: 111;
+    background-color: #111;
     position: relative;
   }
 

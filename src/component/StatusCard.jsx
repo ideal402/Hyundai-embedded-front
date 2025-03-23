@@ -1,52 +1,39 @@
-import React, { useState, useEffect } from "react";
-import api from "../api";
+import React from "react";
 import * as S from "./StatusCard.style";
 import SensorChart from "./SensorChart";
 
-const StatusCard = ({ name, onDataLoaded }) => {
-  const [allData, setAllData] = useState([]);
-  const [latest, setLatest] = useState(null);
+const sensorRanges = {
+  temperature: { min: 0, max: 50 },
+  humidity: { min: 0, max: 100 },
+  motorSpeed: { min: 0, max: 5000 },
+  illuminance: { min: 0, max: 1000 },
+};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get("/sensor");
-        console.log("🚀 ~ fetchData ~ response:", response.data.data);
-
-        const dataArray = response.data.data;
-
-        if (Array.isArray(dataArray) && dataArray.length > 0) {
-          setAllData(dataArray);
-          setLatest(dataArray[0]);
-          if (onDataLoaded) onDataLoaded(dataArray);
-        }
-      } catch (error) {
-        console.error("API 요청 실패:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+const StatusCard = ({ name, latest, allData }) => {
+  const range = sensorRanges[name] || { min: 0, max: 100 };
+  
   return (
     <S.StatusCardContainer>
-      <S.StatusTitle>{name || "로딩 중..."}</S.StatusTitle>
+      <S.StatusTitle>{name}</S.StatusTitle>
       <S.StatusValue>
-        {latest && latest[name] !== undefined ? `${latest[name]}` : "로딩 중..."}
+        {latest !== undefined ? `${latest}` : "로딩 중..."}
       </S.StatusValue>
       <S.StatusBar
-        percentage={latest && latest[name] !== undefined ? latest[name] % 100 : 0}
+        percentage={latest !== undefined ? latest % 100 : 0}
       />
       <S.ChartContainer>
         {allData.length > 0 && (
           <SensorChart
             data={allData}
             dataKey={name}
+            yMin={range.min}
+            yMax={range.max}
           />
         )}
       </S.ChartContainer>
     </S.StatusCardContainer>
   );
 };
+
 
 export default StatusCard;
