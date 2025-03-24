@@ -17,7 +17,7 @@ export const StatusTitle = styled.h3`
 `;
 
 export const StatusValue = styled.p`
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: bold;
   height: 7%;
 `;
@@ -43,4 +43,11 @@ export const StatusBar = styled.div`
 export const ChartContainer = styled.div`
   flex-grow: 1;
   width: 100%;
+`
+
+export const StatusArea = styled.div`
+  height: 8%;
+  display: flex;
+  justify-content: space-between;
+
 `
