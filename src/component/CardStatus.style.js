@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 // 전체 상태 박스
 export const DviceContainer = styled.div`
-  min-height: 350px;
-  height: 40%;
+  height: 55%;
   width: 100%;
   border-radius: 16px;
   padding: 20px;
