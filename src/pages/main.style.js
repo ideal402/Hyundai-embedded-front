@@ -31,6 +31,7 @@ export const MonitorContainer = styled.div`
 `;
 
 export const DeviceSection = styled.div`
+  position: relative;
   width: 30%;
   height: calc(100% - 20px);
   margin-top: 10px;
@@ -116,5 +117,34 @@ export const TopCardArea = styled.div`
     height: 0;
     opacity: 0;
     margin-bottom: 0;
+  }
+`;
+
+export const HamburgerMenu = styled.div`
+  position: absolute;
+  top: 65px;
+  left: 40px;
+  width: 150px;
+  background-color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9;
+`;
+
+export const MenuButton = styled.button`
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    background-color: #666;
   }
 `;

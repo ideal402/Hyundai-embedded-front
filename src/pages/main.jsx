@@ -4,6 +4,7 @@ import StatusCard from "../component/StatusCard";
 import CarStatus from "../component/CarStatus";
 import FadeImage from "../component/FadeImage";
 import ConnectionModal from "../component/ConnectedModal";
+import HamburgerButton from "../component/HamburgerButton";
 import AlertModal from "../component/AlertModal";
 import api from "../api";
 import { WebSocketContext } from "../context/WebSocketContext";
@@ -14,6 +15,7 @@ const BOTTOM_SENSOR_KEYS = ["motorSpeed", "mileage"];
 function Main() {
   const { socket, sendMessage } = useContext(WebSocketContext);
   const [lastSensorTime, setLastSensorTime] = useState(Date.now());
+  const [menuOpen, setMenuOpen] = useState(false);
   const [espConnected, setEspConnected] = useState(true);
   const [showVibModal, setShowVibModal] = useState(false);
   const [showSpeedModal, setShowSpeedModal] = useState(false);
@@ -38,7 +40,7 @@ function Main() {
 
   const speedOverStartRef = useRef(null);
   const latestMileageRef = useRef(0);
-  const currentCarStatusRef = useRef(null); // 🚨 추가
+  const currentCarStatusRef = useRef(null); 
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -74,7 +76,7 @@ function Main() {
 
         setLatest(firstSensor);
         setCarStatus(carRes.data.data);
-        currentCarStatusRef.current = carRes.data.data; // 🚨 초기화 시점에 ref 업데이트
+        currentCarStatusRef.current = carRes.data.data; 
       } catch (error) {
         console.error("초기 데이터 로딩 실패:", error);
       }
@@ -187,6 +189,7 @@ function Main() {
   return (
     <>
       <FadeImage />
+      <ConnectionModal visible={!espConnected}/>
       {showVibModal && (
         <AlertModal
           title="⚠️ 진동 감지됨"
@@ -217,6 +220,12 @@ function Main() {
       )}
       <S.MonitorContainer>
         <S.DeviceSection>
+        <HamburgerButton onClick={() => setMenuOpen(prev => !prev)} />
+          {menuOpen && (
+            <S.HamburgerMenu>
+              <S.MenuButton onClick={() => sendMessage({type: "command",command:"test1"})}>에어컨 시뮬</S.MenuButton>
+            </S.HamburgerMenu>
+          )}
           <CarStatus status={carStatus} isAnomaly2={latestMileageRef>100} />
         </S.DeviceSection>
         <S.SystemStatusSection>
