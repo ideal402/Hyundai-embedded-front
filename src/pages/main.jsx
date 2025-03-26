@@ -125,7 +125,7 @@ function Main() {
             speedOverStartRef.current = null;
           }
 
-          if (newSensor.temperature >= 45 && !acTurnedOn) {
+          if (newSensor.temperature >= 50 && !acTurnedOn) {
             sendMessage({ type: "command", command: "toggle_ac" });
             setShowACModal(true);
             setAcTurnedOn(true);
