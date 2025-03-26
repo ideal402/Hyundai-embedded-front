@@ -18,7 +18,8 @@ function Main() {
   const [showVibModal, setShowVibModal] = useState(false);
   const [showSpeedModal, setShowSpeedModal] = useState(false);
   const [showACModal, setShowACModal] = useState(false);
-  const [acTurnedOn, setAcTurnedOn] = useState(false); 
+  const [showMileageModal, setShowMileageModal] = useState(false);
+  const [acTurnedOn, setAcTurnedOn] = useState(false);
   const [showTopCards, setShowTopCards] = useState(false);
   const [carStatus, setCarStatus] = useState(null);
   const [latest, setLatest] = useState(null);
@@ -34,17 +35,19 @@ function Main() {
     humidity: [],
     illuminance: [],
   });
+
   const speedOverStartRef = useRef(null);
-  
+  const latestMileageRef = useRef(0);
+  const currentCarStatusRef = useRef(null); // 🚨 추가
+
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const sensorRes = await api.get("/sensor");
         const carRes = await api.get("/carState");
-        console.log("🚀 ~ fetchInitialData ~ carRes:", carRes)
-  
+
         const sensorArray = sensorRes.data.data || [];
-  
+
         setSensorData({
           temperature: sensorArray.map(s => ({ temperature: s.temperature, createdAt: s.createdAt })),
           humidity: sensorArray.map(s => ({ humidity: s.humidity, createdAt: s.createdAt })),
@@ -52,7 +55,13 @@ function Main() {
           illuminance: sensorArray.map(s => ({ illuminance: s.illuminance, createdAt: s.createdAt })),
           mileage: sensorArray.map(s => ({ mileage: s.mileage, createdAt: s.createdAt })),
         });
-  
+
+        const latestMileage = sensorArray[0]?.mileage;
+        if (latestMileage >= 100) {
+          setShowMileageModal(true);
+        }
+        latestMileageRef.current = latestMileage ?? 0;
+
         const firstSensor = sensorArray[0];
         const initialMinuteData = {};
         TOP_SENSOR_KEYS.forEach((key) => {
@@ -62,16 +71,16 @@ function Main() {
           }];
         });
         setSensorMinuteData(initialMinuteData);
-  
+
         setLatest(firstSensor);
         setCarStatus(carRes.data.data);
+        currentCarStatusRef.current = carRes.data.data; // 🚨 초기화 시점에 ref 업데이트
       } catch (error) {
         console.error("초기 데이터 로딩 실패:", error);
       }
     };
     fetchInitialData();
   }, []);
-  
 
   useEffect(() => {
     if (!socket) return;
@@ -79,22 +88,30 @@ function Main() {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+
         if (data.type === "sensor") {
           const now = Date.now();
           setLastSensorTime(now);
           setEspConnected(true);
 
-          const newSensor = {
+          let newSensor = {
             ...data.payload,
             createdAt: data.payload.createdAt || new Date().toISOString(),
           };
 
-          if (data.vib === 1) {
+          // 🚨 주행 중이 아니면 속도 0, 마일리지는 이전 값 유지
+          if (currentCarStatusRef.current?.isDriving === false) {
+            newSensor.motorSpeed = 0;
+            newSensor.mileage = latestMileageRef.current;
+          } else {
+            latestMileageRef.current = newSensor.mileage;
+          }
+
+          if (data.payload.vibration === 1 || data.payload.vib === 1) {
             setShowVibModal(true);
           }
 
-          const motorSpeed = Number(newSensor.motorSpeed); // 혹시 모르니 숫자로 변환
-
+          const motorSpeed = Number(newSensor.motorSpeed);
           if (motorSpeed >= 200) {
             if (!speedOverStartRef.current) {
               speedOverStartRef.current = Date.now();
@@ -105,21 +122,12 @@ function Main() {
           } else {
             speedOverStartRef.current = null;
           }
-          console.log("💨 motorSpeed:", motorSpeed);
-          console.log("⏱️ speedOverStartRef.current:", speedOverStartRef.current);
 
-
-          // 온도가 45도 이상이면 에어컨 ON 명령 전송
           if (newSensor.temperature >= 45 && !acTurnedOn) {
-            // 서버로 에어컨 켜기 명령 전송
-            sendMessage({
-              type: "command",
-              command: "airconOn",
-            });
+            sendMessage({ type: "command", command: "airconOn" });
             setShowACModal(true);
-            setAcTurnedOn(true); // 다시 안보내게 막기
+            setAcTurnedOn(true);
           }
-
 
           setSensorData(prev => ({
             temperature: [{ temperature: newSensor.temperature, createdAt: newSensor.createdAt }, ...prev.temperature].slice(0, 60),
@@ -130,11 +138,11 @@ function Main() {
           }));
 
           setLatest(newSensor);
-          
         }
 
         if (data.type === "carState") {
           setCarStatus(data.payload);
+          currentCarStatusRef.current = data.payload; // 🚨 실시간 업데이트 반영
         }
       } catch (err) {
         console.error("WebSocket 메시지 처리 오류:", err);
@@ -158,25 +166,23 @@ function Main() {
   useEffect(() => {
     const interval = setInterval(() => {
       const newMinuteData = {};
-  
+
       TOP_SENSOR_KEYS.forEach((key) => {
         const latestValue = latest?.[key];
-  
         newMinuteData[key] = [
           { [key]: typeof latestValue === "number" ? latestValue : 0, createdAt: new Date().toISOString() },
           ...sensorMinuteData[key],
         ].slice(0, 60);
       });
-  
+
       setSensorMinuteData((prev) => ({
         ...prev,
         ...newMinuteData,
       }));
-    }, 60000); // 1분마다
-  
+    }, 60000);
+
     return () => clearInterval(interval);
   }, [latest]);
-  
 
   return (
     <>
@@ -188,7 +194,6 @@ function Main() {
           onClose={() => setShowVibModal(false)}
         />
       )}
-
       {showSpeedModal && (
         <AlertModal
           title="🚨 과속 경고"
@@ -196,7 +201,6 @@ function Main() {
           onClose={() => setShowSpeedModal(false)}
         />
       )}
-
       {showACModal && (
         <AlertModal
           title="❄️ 에어컨 자동 작동"
@@ -204,12 +208,17 @@ function Main() {
           onClose={() => setShowACModal(false)}
         />
       )}
-
+      {showMileageModal && (
+        <AlertModal
+          title="주행거리 알림"
+          message="주행거리가 100km를 넘었습니다. 브레이크 패드를 검사해주세요."
+          onClose={() => setShowMileageModal(false)}
+        />
+      )}
       <S.MonitorContainer>
         <S.DeviceSection>
-          <CarStatus status={carStatus} />
+          <CarStatus status={carStatus} isAnomaly2={latestMileageRef>100} />
         </S.DeviceSection>
-
         <S.SystemStatusSection>
           <S.StatusTop>
             <S.StatusLeft>
@@ -238,15 +247,14 @@ function Main() {
               />
             ))}
           </S.TopCardArea>
-          {/* 하단 카드 */}
-            {BOTTOM_SENSOR_KEYS.map((key) => (
-              <StatusCard
-                key={key}
-                name={key}
-                latest={latest?.[key]}
-                allData={sensorData[key]}
-              />
-            ))}
+          {BOTTOM_SENSOR_KEYS.map((key) => (
+            <StatusCard
+              key={key}
+              name={key}
+              latest={latest?.[key]}
+              allData={sensorData[key]}
+            />
+          ))}
         </S.SystemStatusSection>
       </S.MonitorContainer>
     </>

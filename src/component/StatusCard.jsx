@@ -8,7 +8,7 @@ const sensorRanges = {
   humidity: { min: 0, max: 100 },
   illuminance: { min: 0, max: 1000 },
   motorSpeed: { min: 0, max: 200 },
-  mileage: { min: 0, max: 100 },
+  mileage: { min: 0, max: 300 },
 };
 
 const keyName = {
@@ -29,6 +29,7 @@ const keyUnit = {
 
 const StatusCard = ({ name, latest, allData, chartType = "second"}) => {
   const range = sensorRanges[name] || { min: 0, max: 100 };
+
   const { min, max } = range;
   const percentage =
     latest !== undefined

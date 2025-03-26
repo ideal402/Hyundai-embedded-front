@@ -2,7 +2,7 @@ import React from 'react'
 import * as S from "./CardStatus.style"
 import Button from './Button'; 
 
-const CarStatus = ({status}) => {
+const CarStatus = ({status, isAnomaly2}) => {
   return (
     <>
     <S.DviceContainer>
@@ -29,8 +29,8 @@ const CarStatus = ({status}) => {
 
               <S.StatusItem>
                 <S.StatusLabel> 상태</S.StatusLabel>
-                <S.StatusValue isOn={!status.isAnomaly}>
-                  {!status.isAnomaly ? "정상" : "이상"}
+                <S.StatusValue isOn={isAnomaly2}>
+                  {isAnomaly2 ? "정상" : "이상"}
                 </S.StatusValue>
               </S.StatusItem>
 
