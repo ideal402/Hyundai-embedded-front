@@ -49,10 +49,14 @@ const CarStatus = ({status}) => {
     <S.ButtonContainer>
       {status ? (
         <>
+        <S.ButtonRowTop>
+          <Button fontsize = "2rem" command="toggle_drive" label={status.isDriving ? "정지":"출발"} />
+        </S.ButtonRowTop>
+        <S.ButtonRowBottom>
           <Button command="toggle_door" label={status.isCarDoorOpen ? "문닫기" : "문열기"} />
           <Button command="toggle_sunroof" label={status.isSunroofOpen ? "선루프 닫기":"선루프 열기" }/>
           <Button command="toggle_ac" label={status.isACActive ? "에어컨 끄기":"에어컨 켜기"} />
-          <Button command="toggle_drive" label={status.isDriving ? "출발":"정지"} />
+        </S.ButtonRowBottom>
         </>
       ) : null}
     </S.ButtonContainer>

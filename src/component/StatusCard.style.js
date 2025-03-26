@@ -4,9 +4,12 @@ export const StatusCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #222;
-  height: 100%;
+  width: 100%;
+  min-height: 400px;
+  /* height: 100%; */
   padding: 20px;
   border-radius: 12px;
+  margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 `;
 

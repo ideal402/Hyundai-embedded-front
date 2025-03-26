@@ -7,6 +7,15 @@ export const WebSocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [socketInstance, setSocketInstance] = useState(null);
 
+  const sendMessage = (messageObj) => {
+    if (socketInstance && socketInstance.readyState === WebSocket.OPEN) {
+      socketInstance.send(JSON.stringify(messageObj));
+      // console.log("📤 WebSocket 메시지 전송:", messageObj);
+    } else {
+      console.warn("⚠️ WebSocket이 연결되지 않았습니다.");
+    }
+  };
+
   useEffect(() => {
     const socket = new WebSocket("wss://hyundai-app-cf6af1f123b1.herokuapp.com/ws");
     console.log("🧩 WebSocket 생성 시도");
@@ -41,15 +50,7 @@ export const WebSocketProvider = ({ children }) => {
     };
   }, []);
 
-  // ✅ WebSocket 메시지 전송 함수
-  const sendMessage = (messageObj) => {
-    if (socketInstance && socketInstance.readyState === WebSocket.OPEN) {
-      socketInstance.send(JSON.stringify(messageObj));
-      // console.log("📤 WebSocket 메시지 전송:", messageObj);
-    } else {
-      console.warn("⚠️ WebSocket이 연결되지 않았습니다.");
-    }
-  };
+
 
   return (
     <WebSocketContext.Provider value={{ socket: socketInstance, connected, sendMessage }}>

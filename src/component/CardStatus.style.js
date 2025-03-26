@@ -76,11 +76,30 @@ export const AnimationContainer = styled.div`
     object-fit: contain;
   }
 `;
+
 export const ButtonContainer = styled.div`
-    min-height: 650;
-    height: 60%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-`
+  height: 45%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);    /* 2행 */
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+  justify-items: center;
+`;
+export const ButtonRowTop = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ButtonRowBottom = styled.div`
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+`;
