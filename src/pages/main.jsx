@@ -126,7 +126,7 @@ function Main() {
           }
 
           if (newSensor.temperature >= 45 && !acTurnedOn) {
-            sendMessage({ type: "command", command: "airconOn" });
+            sendMessage({ type: "command", command: "toggle_ac" });
             setShowACModal(true);
             setAcTurnedOn(true);
           }
